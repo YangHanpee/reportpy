@@ -1,0 +1,22 @@
+import pandas as pd
+import numpy as np
+
+trainnum = input()
+day = input()
+
+def discountnorth(trainnum,day): #輸出該天有行駛車次,優惠
+    df1 = pd.read_excel('earlydis_north.xlsx', header=0)
+    trainnum = int(trainnum)
+    day = int(day)
+    row = df1[df1["車次"] == trainnum]
+    discount = row.iloc[0,day+1] 
+    discount = discount.split('、')
+    if discount[0] == 'NoDiscount':
+        return trainnum,discount
+    elif discount[0] != 'NoRun':
+        discountnew = [f"{i}折" for i in discount]
+        return trainnum,discountnew
+    else:
+        return
+
+print(discountnorth(trainnum,day))

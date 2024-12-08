@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>高鐵訂票簡化版</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
+</head>
+<body>
+    <div class="container mt-5">
+        <h2 class="text-center">高鐵訂票系統</h2>
+        <form id="bookingForm">
+            <!-- 出發站 -->
+            <div class="mb-3">
+                <label for="startStation" class="form-label">出發站</label>
+                <select id="startStation" class="form-select">
+                    <!-- 後續選項由 JS 或後端 API 提供 -->
+                </select>
+            </div>
+            <!-- 抵達站 -->
+            <div class="mb-3">
+                <label for="arriveStation" class="form-label">抵達站</label>
+                <select id="arriveStation" class="form-select">
+                    <!-- 後續選項由 JS 或後端 API 提供 -->
+                </select>
+            </div>
+            <!-- 出發日期 -->
+            <div class="mb-3">
+                <label for="departureDate" class="form-label">出發日期</label>
+                <input type="date" id="departureDate" class="form-control">
+            </div>
+            <!-- 出發時間 -->
+            <div class="mb-3">
+                <label for="departureTime" class="form-label">出發時間</label>
+                <input type="time" id="departureTime" class="form-control">
+            </div>
+            <!-- 提交按鈕 -->
+            <button type="submit" class="btn btn-primary w-100">查詢車次</button>
+        </form>
+    </div>
+
+    <script>
+        // 下拉選單內容（從後端API獲取）
+        const stations = ["左營", "台南", "嘉義", "雲林", "彰化", "台中", "苗栗", "新竹", "桃園", "板橋", "台北", "南港"];
+        const startStation = document.getElementById('startStation');
+        const arriveStation = document.getElementById('arriveStation');
+
+        // 初始化下拉選單
+        stations.forEach(station => {
+            const optionStart = document.createElement('option');
+            const optionArrive = document.createElement('option');
+            optionStart.value = optionArrive.value = station;
+            optionStart.text = optionArrive.text = station;
+            startStation.add(optionStart);
+            arriveStation.add(optionArrive);
+        });
+
+        // 提交表單
+        document.getElementById('bookingForm').addEventListener('submit', async (e) => {
+            e.preventDefault(); // 阻止默認提交行為
+
+            const data = {
+                start: startStation.value,
+                arrive: arriveStation.value,
+                date: document.getElementById('departureDate').value,
+                time: document.getElementById('departureTime').value,
+            };
+
+            // 傳遞給後端
+            const response = await fetch('/api/getSchedule', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(data),
+            });
+            const result = await response.json();
+            console.log(result); // 後續處理查詢結果
+        });
+    </script>
+</body>
+</html>
